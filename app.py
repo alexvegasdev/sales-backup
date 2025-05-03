@@ -22,9 +22,13 @@ def get_db_connection():
     )
     return conn
 
-# Ruta principal para la exportación de datos (existente)
+# Ruta principal para la exportación de datos
 @app.route("/", methods=["GET", "POST"])
 def index():
+    # Definir la carpeta de backups
+    BACKUP_FOLDER = os.path.join(os.getcwd(), "backups")
+    os.makedirs(BACKUP_FOLDER, exist_ok=True)  # Asegurarse de que la carpeta exista
+
     if request.method == "POST":
         # Obtener mes y año de los filtros del formulario
         month = request.form.get("month")
@@ -48,8 +52,6 @@ def index():
         return redirect(url_for("index"))
 
     # Obtener el listado de backups generados
-    BACKUP_FOLDER = os.path.join(os.getcwd(), "backups")
-    os.makedirs(BACKUP_FOLDER, exist_ok=True)
     backups = os.listdir(BACKUP_FOLDER)
     backups.sort(reverse=True)  # Ordenar los backups de más reciente a más antiguo
     return render_template("index.html", backups=backups)
