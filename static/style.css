@@ -9,13 +9,14 @@ body {
   background: white;
   padding: 2rem;
   border-radius: 1rem;
-  max-width: 600px;
+  max-width: 900px;
   margin: auto;
   box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 
-h1, h2 {
+h1, h2, h3 {
   color: #2c3e50;
+  margin-top: 0;
 }
 
 form {
@@ -30,7 +31,7 @@ label {
   font-weight: bold;
 }
 
-select, button {
+select, button, input {
   padding: 0.5rem;
   border-radius: 5px;
   border: 1px solid #ccc;
@@ -73,4 +74,56 @@ button:hover {
 
 .download-btn:hover {
   background-color: #219955;
+}
+
+/* Estilos para flash messages */
+.flash-messages {
+  margin-bottom: 1rem;
+}
+
+.flash {
+  padding: 0.75rem;
+  margin-bottom: 0.5rem;
+  border-radius: 0.25rem;
+  position: relative;
+}
+
+.success {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.error {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+.close-btn {
+  position: absolute;
+  right: 0.75rem;
+  top: 0.75rem;
+  cursor: pointer;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  body {
+    padding: 1rem;
+  }
+  
+  .container {
+    padding: 1.5rem;
+  }
+  
+  form {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  form > * {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
 }

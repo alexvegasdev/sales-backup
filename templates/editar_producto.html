@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Editar Precio de Producto</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    .product-form {
+      margin-bottom: 2rem;
+      background-color: #f8fafc;
+      padding: 1.5rem;
+      border-radius: 0.5rem;
+    }
+    
+    .form-group {
+      margin-bottom: 1rem;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: bold;
+    }
+    
+    .form-control {
+      width: 100%;
+      padding: 0.5rem;
+      border: 1px solid #cbd5e0;
+      border-radius: 0.25rem;
+      font-size: 1rem;
+    }
+    
+    .price-input {
+      max-width: 200px;
+    }
+    
+    .submit-btn {
+      background-color: #3498db;
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 0.25rem;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+    
+    .submit-btn:hover {
+      background-color: #2980b9;
+    }
+    
+    .history-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+    
+    .history-table th, .history-table td {
+      padding: 0.75rem;
+      text-align: left;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    
+    .history-table th {
+      background-color: #f8fafc;
+      font-weight: bold;
+    }
+    
+    .price-increase {
+      color: #27ae60;
+    }
+    
+    .price-decrease {
+      color: #e74c3c;
+    }
+    
+    .navigation {
+      margin-bottom: 2rem;
+    }
+    
+    .nav-link {
+      display: inline-block;
+      margin-right: 1rem;
+      color: #3498db;
+      text-decoration: none;
+    }
+    
+    .nav-link:hover {
+      text-decoration: underline;
+    }
+    
+    /* Mensajes flash */
+    .flash {
+      padding: 0.75rem;
+      margin-bottom: 1rem;
+      border-radius: 0.25rem;
+      color: white;
+    }
+    
+    .success {
+      background-color: #27ae60;
+    }
+    
+    .error {
+      background-color: #e74c3c;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="navigation">
+      <a href="{{ url_for('listar_productos') }}" class="nav-link">⬅️ Volver a Productos</a>
+    </div>
+    
+    <h1>🔄 Actualizar Precio de Producto</h1>
+    
+    <!-- Mensajes Flash -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="flash {{ category }}">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+    
+    <div class="product-details">
+      <h2>{{ producto.nom_pro }}</h2>
+      <p>ID del producto: {{ producto.id_pro }}</p>
+      <p>Precio actual: ${{ "{:.2f}".format(producto.pre_pro) }}</p>
+      
+      <form method="POST" class="product-form">
+        <div class="form-group">
+          <label for="nuevo_precio">Nuevo precio:</label>
+          <input 
+            type="number" 
+            id="nuevo_precio" 
+            name="nuevo_precio" 
+            class="form-control price-input" 
+            value="{{ "{:.2f}".format(producto.pre_pro) }}" 
+            step="0.01" 
+            min="0.01" 
+            required
+          >
+        </div>
+        
+        <button type="submit" class="submit-btn">Actualizar Precio</button>
+      </form>
+      
+      <h3>Historial de Cambios de Precio</h3>
+      {% if historial %}
+        <table class="history-table">
+          <thead>
+            <tr>
+              <th>Fecha</th>
+              <th>Hora</th>
+              <th>Precio Anterior</th>
+              <th>Precio Nuevo</th>
+              <th>Cambio</th>
+              <th>Usuario</th>
+              <th>Host Home</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for registro in historial %}
+              <tr>
+                <td>{{ registro.fecha.strftime('%d/%m/%Y') }}</td>
+                <td>{{ registro.hora.strftime('%H:%M:%S') }}</td>
+                <td>${{ "{:.2f}".format(registro.precio_anterior) }}</td>
+                <td>${{ "{:.2f}".format(registro.precio_nuevo) }}</td>
+                <td>
+                  {% set diferencia = registro.precio_nuevo - registro.precio_anterior %}
+                  {% if diferencia > 0 %}
+                    <span class="price-increase">+${{ "{:.2f}".format(diferencia) }}</span>
+                  {% elif diferencia < 0 %}
+                    <span class="price-decrease">${{ "{:.2f}".format(diferencia) }}</span>
+                  {% else %}
+                    <span>$0.00</span>
+                  {% endif %}
+                </td>
+                <td>{{ registro.nom_usu }}</td>
+                <td>{{ registro.host_name }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% else %}
+        <p>No hay cambios de precio registrados para este producto.</p>
+      {% endif %}
+
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Administración de Productos</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    .products-container {
+      max-width: 800px;
+      margin: auto;
+    }
+    
+    .product-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+    
+    .product-table th, .product-table td {
+      padding: 0.75rem;
+      text-align: left;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    
+    .product-table th {
+      background-color: #f8fafc;
+      font-weight: bold;
+    }
+    
+    .product-table tr:hover {
+      background-color: #f1f5f9;
+    }
+    
+    .edit-btn {
+      background-color: #3498db;
+      color: white;
+      text-decoration: none;
+      padding: 0.3rem 0.6rem;
+      border-radius: 4px;
+      font-size: 0.8rem;
+    }
+    
+    .edit-btn:hover {
+      background-color: #2980b9;
+    }
+    
+    .navigation {
+      margin-bottom: 2rem;
+    }
+    
+    .nav-link {
+      display: inline-block;
+      margin-right: 1rem;
+      color: #3498db;
+      text-decoration: none;
+    }
+    
+    .nav-link:hover {
+      text-decoration: underline;
+    }
+    
+    /* Mensajes flash */
+    .flash {
+      padding: 0.75rem;
+      margin-bottom: 1rem;
+      border-radius: 0.25rem;
+      color: white;
+    }
+    
+    .success {
+      background-color: #27ae60;
+    }
+    
+    .error {
+      background-color: #e74c3c;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="navigation">
+      <a href="{{ url_for('index') }}" class="nav-link">⬅️ Volver a Exportador</a>
+    </div>
+    
+    <h1>🏷️ Administración de Productos</h1>
+    
+    <!-- Mensajes Flash -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="flash {{ category }}">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+    
+    <div class="products-container">
+      <h2>Lista de Productos</h2>
+      
+      {% if productos %}
+        <table class="product-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nombre</th>
+              <th>Precio</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for producto in productos %}
+              <tr>
+                <td>{{ producto.id_pro }}</td>
+                <td>{{ producto.nom_pro }}</td>
+                <td>${{ "{:.2f}".format(producto.pre_pro) }}</td>
+                <td>
+                  <a href="{{ url_for('editar_producto', id_producto=producto.id_pro) }}" class="edit-btn">Editar precio</a>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% else %}
+        <p>No hay productos disponibles.</p>
+      {% endif %}
+    </div>
+  </div>
+</body>
+</html>
